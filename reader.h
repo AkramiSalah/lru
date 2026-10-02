@@ -11,11 +11,5 @@ public:
     explicit reader(std::istream& inStream) : inStream(inStream){}
 private:
     std::istream& inStream;
-    static constexpr int GET_COMMAND_LENGTH = 2;
-    static constexpr int SET_COMMAND_LENGTH = 3;
-    
-
-    void printUsage() const;
-
-    bool validCommand(std::vector<std::string>& commandWords) const;
+    const char* getUsageString() const;
 };
