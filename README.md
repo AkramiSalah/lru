@@ -20,4 +20,4 @@
 
 
 ### compilation commad:
-g++ -std=c++20 -Wall -Wextra -g main.cpp -o lru 
+g++ -std=c++20 -Wall -Wextra -g get.cpp reader.cpp main.cpp -o lru
