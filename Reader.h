@@ -5,11 +5,11 @@
 #include <iostream>
 #include <vector>
 
-class reader{
+class Reader{
 public:
     std::string readCommand();
-    explicit reader(std::istream& inStream) : inStream(inStream){}
+    explicit Reader(std::istream& inStream) : inStream(inStream){}
 private:
     std::istream& inStream;
-    const char* getUsageString() const;
+    void printUsageString() const;
 };

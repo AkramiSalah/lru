@@ -2,12 +2,11 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <format>
 
-class get{
+class Get{
 public:
     int key;
-    static std::unique_ptr<get> deserialize(const std::vector<std::string>& commandWords);
+    static std::unique_ptr<Get> deserialize(const std::vector<std::string>& commandWords);
 
     const std::string serialize() const;
 
