@@ -1,6 +1,6 @@
-#include "set.h"
+#include "Set.h"
 
-std::unique_ptr<set> set::deserialize(const std::vector<std::string>& commandWords){
+std::unique_ptr<Set> Set::deserialize(const std::vector<std::string>& commandWords){
     if(commandWords.size() == SET_COMMAND_LENGTH && commandWords[0] == "SET" ){
         int key;
         int value;
@@ -8,7 +8,7 @@ std::unique_ptr<set> set::deserialize(const std::vector<std::string>& commandWor
         {
             key = std::stoi(commandWords[1]);
             value = std::stoi(commandWords[2]);
-            return std::make_unique<set>(key, value);
+            return std::make_unique<Set>(key, value);
         }
         catch(...){
             return nullptr; // nullptr will be treaded as a no-op later on in the queue, this means itll fail silently, not too good.

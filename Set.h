@@ -3,12 +3,12 @@
 #include <vector>
 #include <string>
 
-class set{
+class Set{
 public:
     int key;
     int value;
 
-    static std::unique_ptr<set> deserialize(const std::vector<std::string>& commandWords);
+    static std::unique_ptr<Set> deserialize(const std::vector<std::string>& commandWords);
 
 private:
     static constexpr int SET_COMMAND_LENGTH = 3;    

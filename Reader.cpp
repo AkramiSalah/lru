@@ -1,7 +1,7 @@
-#include "reader.h"
-#include "get.h"
+#include "Reader.h"
+#include "Get.h"
 
-std::string reader::readCommand(){
+std::string Reader::readCommand(){
     // TODO: make this use string view vector instead. change the get,set classes accordingly
     std::vector<std::string> commandWords;
     std::string word;
@@ -12,13 +12,17 @@ std::string reader::readCommand(){
         if(inStream.peek() == '\n') break;
     }
 
-    auto get_command = get::deserialize(commandWords);
+    auto get_command = Get::deserialize(commandWords);
+    if(get_command == nullptr){
+        printUsageString();
+        return readCommand();
+    }
     return get_command->serialize();
 
 
     // return getUsageString();
 }
 
-const char* reader::getUsageString() const{
-    return "Usage:\n SET <key> <value>\n GET <key>\n";
+void Reader::printUsageString() const{
+    std::cout << "Usage:\n SET <key> <value>\n GET <key>\n";
 }
