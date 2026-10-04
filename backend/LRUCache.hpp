@@ -4,21 +4,25 @@
 
 class LRUCache {
 public:
+    using KeyType = int;
+    using ValueType = int;
+    using KeyValuePair = std::pair<KeyType, ValueType>;
+    using ListIter = std::list<KeyValuePair>::iterator;
+
     LRUCache() = delete; // an LRU cache has to have a capacity!
 
-    explicit LRUCache(int capacity);
+    explicit LRUCache(size_t capacity);
     
-    int get(int key); 
+    int get(KeyType key); 
 
-    void put(int key, int value);
+    void put(KeyType key, ValueType value);
 private:
-    std::size_t capacity_;
-    std::list<std::pair<int, int>> list_; // holds [key,val]
-    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> map_;
+    size_t capacity_;
+    std::list<KeyValuePair> list_;
+    std::unordered_map<KeyType, ListIter> map_;
 
-    void bump(std::list<std::pair<int, int>>::iterator it);
+    void bump(ListIter it);
 
     void evict();
 
 };
-
