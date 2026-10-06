@@ -23,4 +23,4 @@ all single proccess single thread no need to over complicate.
 
 
 ### compilation commad:
-g++ -std=c++20 -Wall -Wextra -g get.cpp reader.cpp main.cpp -o lru
+g++ -std=c++20 -Wall -Wextra main.cpp frontend/Reader.cpp handlers/CommandHandler.cpp -o lru
