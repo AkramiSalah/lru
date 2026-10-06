@@ -27,6 +27,16 @@ std::optional<int> CommandHandler::deserializeInt(const std::string& token){
     }
 }
 
+
+std::optional<std::string> CommandHandler::serializeInt(int n){
+    try{
+        return std::to_string(n);
+    }catch(...){
+        return std::nullopt;
+    }
+    
+}
+
 std::string CommandHandler::handleGet(const std::vector<std::string>& command){
     std::string errorString = "Usage: GET <key>\n";
 

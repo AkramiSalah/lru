@@ -15,6 +15,8 @@ private:
     //helpers
     std::optional<int> deserializeInt(const std::string& token);
 
+    std::optional<std::string> serializeInt(int n);
+
     std::string handleGet(const std::vector<std::string>& command);
 
     std::string handleSet(const std::vector<std::string>& command);
