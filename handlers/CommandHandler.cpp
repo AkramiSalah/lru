@@ -1,7 +1,16 @@
 #include "CommandHandler.hpp"
 #include "../backend/LRUCache.hpp"
+#include <optional>
 
-using namespace CommandHandler;
+
+std::optional<int> deserializeInt(const std::string& token){
+    try{
+        return std::stoi(token);
+    }catch(...){
+        return std::nullopt;
+    }
+}
+
 std::string handleGet(const std::vector<std::string>& command){
     std::string errorString = "Usage: GET <key>\n";
 
@@ -11,9 +20,12 @@ std::string handleGet(const std::vector<std::string>& command){
         return errorString  + "got too many arguments, try again.";
     }
 
-    // TODO : actual logic here....
-    return "yipee";
+    auto deserializedKey = deserializeInt(command[1]);
+    if(!deserializedKey){
+        return "ERROR: key was not able to be proccesed, make sure its of an int type";
+    }
 
+    return "yipee";
 }
 
 std::string handleSet(const std::vector<std::string>& command){
@@ -24,10 +36,22 @@ std::string handleSet(const std::vector<std::string>& command){
         return errorString + "got too many arguments, try again.";
     }
 
-    // TODO : actual logic here....
-    return "yipeee";
+    auto deserializedKey = deserializeInt(command[1]);
+    if(!deserializedKey){
+        return "ERROR: key was not able to be proccesed, make sure its of an int type";
+    }
+
+    auto deserializedValue= deserializeInt(command[2]);
+    if(!deserializedValue){
+        return "ERROR: value was not able to be proccesed, make sure its of an int type";
+    }
+
+
+    return "yipee";
+
 
 }
+
 
 std::string CommandHandler::handleCommand(const std::vector<std::string>& command){
 
