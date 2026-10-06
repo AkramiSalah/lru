@@ -1,6 +1,7 @@
 #include "LRUCache.hpp"
 
 #include <list>
+#include <optional>
 #include <unordered_map>
 
 LRUCache::LRUCache(size_t capacity) : capacity_(capacity) {
@@ -20,13 +21,13 @@ void LRUCache::evict(){
 }
 
 
-int LRUCache::get(KeyType key) {
+std::optional<int> LRUCache::get(KeyType key) {
     auto nodeIterator = map_.find(key);
     if(nodeIterator != map_.end()){
         bump(nodeIterator->second);
         return nodeIterator->second->second;
     }
-    return -1;
+    return std::nullopt;
 }
 
 void LRUCache::put(KeyType key, ValueType value) {

@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <optional>
 #include <unordered_map>
 
 class LRUCache {
@@ -13,7 +14,7 @@ public:
 
     explicit LRUCache(size_t capacity);
     
-    int get(KeyType key); 
+    std::optional<int> get(KeyType key); 
 
     void put(KeyType key, ValueType value);
 private:
