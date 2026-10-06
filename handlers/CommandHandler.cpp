@@ -55,10 +55,9 @@ std::string CommandHandler::handleGet(const std::vector<std::string>& command){
         auto serializedValue = serializeInt(value.value());
         if(serializedValue) return serializedValue.value();
         return "ERROR: the key was found, but the value could not be serialized :(";
-
     }
-    return "Not Found: this value was either never in the cache, or was in the cache, but was evicted.";
 
+    return "Not Found: this value was either never in the cache, or was in the cache, but was evicted.";
 }
 
 std::string CommandHandler::handleSet(const std::vector<std::string>& command){
@@ -82,4 +81,3 @@ std::string CommandHandler::handleSet(const std::vector<std::string>& command){
     cache_.put(deserializedKey.value(), deserializedValue.value());
     return "key value pair was set";
 }
-

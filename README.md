@@ -26,5 +26,5 @@ it receives commands from the front end
 - ditch the std lib based lru backend and make a custom one using free lists  
 
 
-### compilation commad:
-g++ -std=c++20 -Wall -Wextra main.cpp frontend/Reader.cpp handlers/CommandHandler.cpp -o lru
+### compilation command:
+g++ -std=c++20 -g -Wall -Wextra main.cpp frontend/Reader.cpp handlers/CommandHandler.cpp backend/LRUCache.cpp -o lru
