@@ -1,5 +1,6 @@
 #include "frontend/Reader.hpp"
 #include "handlers/CommandHandler.hpp"
+#include "backend/LRUCache.hpp"
 #include <iostream>
 
 // std::string getInputString(){
@@ -10,9 +11,11 @@
 
 int main(){
     Reader reader{std::cin};
+    LRUCache cache(10);
+    CommandHandler commandHandler(cache);
     std::cout << "> ";
     while(true){
-        std::string response = CommandHandler::handleCommand(reader.readCommand());
+        std::string response = commandHandler.handleCommand(reader.readCommand());
         std::cout << "|--> "<< response << "\n";
         std::cout << "> ";
     }

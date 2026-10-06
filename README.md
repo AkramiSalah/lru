@@ -17,6 +17,10 @@
      GET <key>
 all single proccess single thread no need to over complicate.
 
+current architecture:
+CommandHandler has a backend
+it receives commands from the front end
+
 ## Possible Furutre Improvements:
 - migrate to a Python based fornt end with richer command options
 - ditch the std lib based lru backend and make a custom one using free lists  

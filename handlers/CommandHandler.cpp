@@ -3,7 +3,23 @@
 #include <optional>
 
 
-std::optional<int> deserializeInt(const std::string& token){
+std::string CommandHandler::handleCommand(const std::vector<std::string>& command){
+
+    if(command.size() == 0){
+        return ""; // i want to allow the user to just press enter to go down a few lines without spitting errors in his face.
+    }
+    else if(command[0] == "GET"){
+        return handleGet(command);
+    }else if (command[0] == "SET"){
+        return handleSet(command);
+    }
+
+    //else
+    return "Usage:\n SET <key> <value>\n GET <key>";
+}
+
+
+std::optional<int> CommandHandler::deserializeInt(const std::string& token){
     try{
         return std::stoi(token);
     }catch(...){
@@ -11,7 +27,7 @@ std::optional<int> deserializeInt(const std::string& token){
     }
 }
 
-std::string handleGet(const std::vector<std::string>& command){
+std::string CommandHandler::handleGet(const std::vector<std::string>& command){
     std::string errorString = "Usage: GET <key>\n";
 
     if(command.size() < 2){
@@ -28,7 +44,7 @@ std::string handleGet(const std::vector<std::string>& command){
     return "yipee";
 }
 
-std::string handleSet(const std::vector<std::string>& command){
+std::string CommandHandler::handleSet(const std::vector<std::string>& command){
     std::string errorString = "Usage: SET <key> <value>\n";
     if(command.size() < 3){
         return errorString + "didn't get a key, or a value, or both. try again.";
@@ -52,19 +68,3 @@ std::string handleSet(const std::vector<std::string>& command){
 
 }
 
-
-std::string CommandHandler::handleCommand(const std::vector<std::string>& command){
-
-    if(command.size() == 0){
-        return ""; // i want to allow the user to just press enter to go down a few lines without spitting errors in his face.
-    }
-    else if(command[0] == "GET"){
-        return handleGet(command);
-    }else if (command[0] == "SET"){
-        return handleSet(command);
-    }
-
-    //else
-    return "Usage:\n SET <key> <value>\n GET <key>";
-    
-}
