@@ -11,12 +11,15 @@
 * use custom memory allocation (slab allocator adjacent)
 
 ## Current Working Idea:
-- have a Queue of commands which are either set or get objects.
-- at runtime just go though the Queue until its empty.
+- have a core lru backend
+- have a front end thats a primitive CLI with a limited set of commands:
+     SET <key> <value>
+     GET <key>
+all single proccess single thread no need to over complicate.
 
-- set/get object:
-    - are created/serialized from the cli's input
-    - can be consumed by the (in planning) storage class.
+## Possible Furutre Improvements:
+- migrate to a Python based fornt end with richer command options
+- ditch the std lib based lru backend and make a custom one using free lists  
 
 
 ### compilation commad:
