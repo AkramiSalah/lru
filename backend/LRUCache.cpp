@@ -1,48 +1,3 @@
-
-// #include <cstddef>
-// #include <list>
-// #include <optional>
-// #include <unordered_map>
-
-// LRUCache::LRUCache(size_t capacity) : capacity_(capacity), memory( new int[capacity_]), freelist_head_(0) {
-    //     map_.reserve(capacity_);
-    // }
-    
-    // void LRUCache::bump(int nodeIndex){
-        //     // make node at memory[nodeIndex] become the head
-        // }
-        
-        // void LRUCache::evict(){
-            //     while(list_.size() > capacity_){
-                //         KeyType key = list_.back().first;
-                //         map_.erase(key);
-                //         list_.pop_back();
-                //     }
-                // }
-                
-                
-                // std::optional<int> LRUCache::get(KeyType key) {
-                    //     auto nodeIterator = map_.find(key);
-                    //     if(nodeIterator != map_.end()){
-                        //         bump(nodeIterator->second);
-                        //         return nodeIterator->second->second;
-                        //     }
-                        //     return std::nullopt;
-                        // }
-                        
-                        // void LRUCache::put(KeyType key, ValueType value) {
-                            //     auto nodeIterator = map_.find(key);
-                            //     if(nodeIterator != map_.end()){
-                                //         bump(nodeIterator->second);
-                                //         nodeIterator->second->second = value;
-                                //         return;
-                                //     }
-                                
-                                //     list_.emplace_front(key,value);
-                                //     map_.insert({key, list_.begin()});
-                                //     evict();
-                                // }
-                                
 #include "LRUCache.hpp"
 #include <optional>
 #include <stdexcept>
@@ -55,10 +10,10 @@ LRUCache::LRUCache(const uint32_t capacity) : capacity_(capacity), memory_(new B
     auto prev_index = BLOCK_NULLPTR;
 
     for(uint32_t i = 0; i < capacity_ - 1; ++i){
-        memory_[i].freeBlock = FreeBlock{.prev = prev_index, .next = i+1};
+        memory_[i] = Block{.prev = prev_index, .next = i+1};
         prev_index = i;
     }
-    memory_[capacity_ - 1].freeBlock = FreeBlock{.prev = prev_index, .next = BLOCK_NULLPTR};
+    memory_[capacity_ - 1] = Block{.prev = prev_index, .next = BLOCK_NULLPTR};
 
 }
 
@@ -67,35 +22,64 @@ std::optional<KeyType> LRUCache::get(KeyType key){
     if(it == map_.end()) return std::nullopt;
     
     bump(it->second);
-    return memory_[it->second].allocatedBlock.val;
+    return memory_[it->second].val;
 }
 
 void LRUCache::put(KeyType key, ValueType value){
     uint32_t dest_index = freelist_head_index_;
 
     if(freelist_head_index_ == BLOCK_NULLPTR){
-        uint32_t dest_index = lru_tail_index_;
+        dest_index = lru_tail_index_;
+        map_.erase(memory_[dest_index].key);
+        memory_[dest_index].key = key;
+        memory_[dest_index].val = value;
+
+        bump(dest_index);
+
+    }else{
+        // we have a free block on the free list
+        
+        dest_index = freelist_head_index_;
+        freelist_head_index_ = memory_[dest_index].next;
+
+        memory_[dest_index].prev = lru_tail_index_;
+        memory_[lru_tail_index_].next = dest_index;
+
+        memory_[dest_index].key = key;
+        memory_[dest_index].val = value;
+
+        lru_tail_index_ = dest_index;
+
+        bump(dest_index);
+
+
     }
 
-    memory_[dest_index].allocatedBlock.key = key;
-    memory_[dest_index].allocatedBlock.val = value;
-    bump(dest_index);
+    map_.insert({key, dest_index});
 
-    if(freelist_head_index_ != BLOCK_NULLPTR)
-        freelist_head_index_ = memory_[dest_index].freeBlock.next;
+    // memory_[dest_index].key = key;
+    // memory_[dest_index].val = value;
+
+    // memory_[lru_tail_index_].next = dest_index;
+    // lru_tail_index_ = dest_index;
+
+    // bump(dest_index);
+
+    // if(freelist_head_index_ != BLOCK_NULLPTR)
+    //     freelist_head_index_ = memory_[dest_index].next;
 
 }
 
 void LRUCache::bump(uint32_t nodeIndex){
     if(nodeIndex == lru_head_index_) return;
 
-    AllocatedBlock& blockToBump = memory_[nodeIndex].allocatedBlock;
+    Block& blockToBump = memory_[nodeIndex];
     
-    AllocatedBlock& prevBlock = memory_[blockToBump.prev].allocatedBlock;
+    Block& prevBlock = memory_[blockToBump.prev];
     prevBlock.next = blockToBump.next;
 
     if(nodeIndex != lru_tail_index_){
-        AllocatedBlock& nextBlock = memory_[blockToBump.next].allocatedBlock;
+        Block& nextBlock = memory_[blockToBump.next];
         nextBlock.prev = blockToBump.prev;
     }else{
         lru_tail_index_ = blockToBump.prev;
@@ -105,4 +89,3 @@ void LRUCache::bump(uint32_t nodeIndex){
     blockToBump.next = lru_head_index_;
     lru_head_index_ = nodeIndex;    
 }
-
