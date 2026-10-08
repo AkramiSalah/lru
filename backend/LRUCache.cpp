@@ -1,44 +1,83 @@
+
+// #include <cstddef>
+// #include <list>
+// #include <optional>
+// #include <unordered_map>
+
+// LRUCache::LRUCache(size_t capacity) : capacity_(capacity), memory( new int[capacity_]), freelist_head_(0) {
+    //     map_.reserve(capacity_);
+    // }
+    
+    // void LRUCache::bump(int nodeIndex){
+        //     // make node at memory[nodeIndex] become the head
+        // }
+        
+        // void LRUCache::evict(){
+            //     while(list_.size() > capacity_){
+                //         KeyType key = list_.back().first;
+                //         map_.erase(key);
+                //         list_.pop_back();
+                //     }
+                // }
+                
+                
+                // std::optional<int> LRUCache::get(KeyType key) {
+                    //     auto nodeIterator = map_.find(key);
+                    //     if(nodeIterator != map_.end()){
+                        //         bump(nodeIterator->second);
+                        //         return nodeIterator->second->second;
+                        //     }
+                        //     return std::nullopt;
+                        // }
+                        
+                        // void LRUCache::put(KeyType key, ValueType value) {
+                            //     auto nodeIterator = map_.find(key);
+                            //     if(nodeIterator != map_.end()){
+                                //         bump(nodeIterator->second);
+                                //         nodeIterator->second->second = value;
+                                //         return;
+                                //     }
+                                
+                                //     list_.emplace_front(key,value);
+                                //     map_.insert({key, list_.begin()});
+                                //     evict();
+                                // }
+                                
 #include "LRUCache.hpp"
-
-#include <list>
 #include <optional>
-#include <unordered_map>
+#include <stdexcept>
 
-LRUCache::LRUCache(size_t capacity) : capacity_(capacity) {
-    map_.reserve(capacity_);
-}
+LRUCache::LRUCache(const uint32_t capacity) : capacity_(capacity), memory_(new Block[capacity_]), freelist_head_index_(0), lru_head_index_(0), lru_tail_index_(0) {
+    if(capacity_ == 0) throw std::invalid_argument("capacity must be greater than 0 !!!");
+    if(capacity_ > MAX_CAPACITY) throw std::out_of_range("capacity must be smaller than the maximum unsigned 32bit integer!!!");
 
-void LRUCache::bump(ListIter it){
-    list_.splice(list_.cbegin(), list_, it);
-}
+    map_.reserve(capacity);
+    auto prev_index = BLOCK_NULLPTR;
 
-void LRUCache::evict(){
-    while(list_.size() > capacity_){
-        KeyType key = list_.back().first;
-        map_.erase(key);
-        list_.pop_back();
+    for(uint32_t i = 0; i < capacity_ - 1; ++i){
+        memory_[i].freeBlock = FreeBlock{.prev = prev_index, .next = i+1};
+        prev_index = i;
     }
+    memory_[capacity_ - 1].freeBlock = FreeBlock{.prev = prev_index, .next = BLOCK_NULLPTR};
+
 }
 
+std::optional<KeyType> LRUCache::get(KeyType key){
+    auto it = map_.find(key);
+    if(it == map_.end()) return std::nullopt;
+    
+    // TODO: bump that allocated node
+    return memory_[it->second].allocatedBlock.val;
+}
 
-std::optional<int> LRUCache::get(KeyType key) {
-    auto nodeIterator = map_.find(key);
-    if(nodeIterator != map_.end()){
-        bump(nodeIterator->second);
-        return nodeIterator->second->second;
+void LRUCache::put(KeyType key, ValueType value){
+    if(freelist_head_index_ == BLOCK_NULLPTR){
+        // steal the least recently used node's memory, change fields accordingly, i.e change key and value, and bump it.
     }
-    return std::nullopt;
+    //else
+    // take the node on the freelists head
+    // put the needed data there
+    // bump it
+    // move the freelists head forward.
 }
 
-void LRUCache::put(KeyType key, ValueType value) {
-    auto nodeIterator = map_.find(key);
-    if(nodeIterator != map_.end()){
-        bump(nodeIterator->second);
-        nodeIterator->second->second = value;
-        return;
-    }
-
-    list_.emplace_front(key,value);
-    map_.insert({key, list_.begin()});
-    evict();
-}
