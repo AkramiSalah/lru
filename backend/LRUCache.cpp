@@ -82,15 +82,24 @@ void LRUCache::put(KeyType key, ValueType value){
 }
 
 void LRUCache::bump(uint32_t nodeIndex){
+    if(nodeIndex == lru_head_index_) return;
+
     AllocatedBlock& blockToBump = memory_[nodeIndex].allocatedBlock;
+    
     AllocatedBlock& prevBlock = memory_[blockToBump.prev].allocatedBlock;
     AllocatedBlock& nextBlock = memory_[blockToBump.next].allocatedBlock;
 
     prevBlock.next = blockToBump.next;
-    nextBlock.prev = blockToBump.prev;
+
+    if(nodeIndex != lru_tail_index_){
+        AllocatedBlock& nextBlock = memory_[blockToBump.next].allocatedBlock;
+        nextBlock.prev = blockToBump.prev;
+    }else{
+        lru_tail_index_ = blockToBump.prev;
+    }
 
     blockToBump.prev = BLOCK_NULLPTR;
     blockToBump.next = lru_head_index_;
-    lru_head_index_ = nodeIndex;
+    lru_head_index_ = nodeIndex;    
 }
 
