@@ -81,3 +81,16 @@ void LRUCache::put(KeyType key, ValueType value){
     // move the freelists head forward.
 }
 
+void LRUCache::bump(uint32_t nodeIndex){
+    AllocatedBlock& blockToBump = memory_[nodeIndex].allocatedBlock;
+    AllocatedBlock& prevBlock = memory_[blockToBump.prev].allocatedBlock;
+    AllocatedBlock& nextBlock = memory_[blockToBump.next].allocatedBlock;
+
+    prevBlock.next = blockToBump.next;
+    nextBlock.prev = blockToBump.prev;
+
+    blockToBump.prev = BLOCK_NULLPTR;
+    blockToBump.next = lru_head_index_;
+    lru_head_index_ = nodeIndex;
+}
+
