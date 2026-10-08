@@ -66,19 +66,24 @@ std::optional<KeyType> LRUCache::get(KeyType key){
     auto it = map_.find(key);
     if(it == map_.end()) return std::nullopt;
     
-    // TODO: bump that allocated node
+    bump(it->second);
     return memory_[it->second].allocatedBlock.val;
 }
 
 void LRUCache::put(KeyType key, ValueType value){
+    uint32_t dest_index = freelist_head_index_;
+
     if(freelist_head_index_ == BLOCK_NULLPTR){
-        // steal the least recently used node's memory, change fields accordingly, i.e change key and value, and bump it.
+        uint32_t dest_index = lru_tail_index_;
     }
-    //else
-    // take the node on the freelists head
-    // put the needed data there
-    // bump it
-    // move the freelists head forward.
+
+    memory_[dest_index].allocatedBlock.key = key;
+    memory_[dest_index].allocatedBlock.val = value;
+    bump(dest_index);
+
+    if(freelist_head_index_ != BLOCK_NULLPTR)
+        freelist_head_index_ = memory_[dest_index].freeBlock.next;
+
 }
 
 void LRUCache::bump(uint32_t nodeIndex){
@@ -87,8 +92,6 @@ void LRUCache::bump(uint32_t nodeIndex){
     AllocatedBlock& blockToBump = memory_[nodeIndex].allocatedBlock;
     
     AllocatedBlock& prevBlock = memory_[blockToBump.prev].allocatedBlock;
-    AllocatedBlock& nextBlock = memory_[blockToBump.next].allocatedBlock;
-
     prevBlock.next = blockToBump.next;
 
     if(nodeIndex != lru_tail_index_){
