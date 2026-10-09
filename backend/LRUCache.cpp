@@ -72,5 +72,15 @@ void LRUCache::detachBlock(uint32_t blockIndex){
     if(block.prev != BLOCK_NULLPTR){
         getBlock(block.prev).next = block.next;
     }
+std::optional<uint32_t> LRUCache::allocBlock(){
+    if(freelist_head_index_ == BLOCK_NULLPTR){
+        return std::nullopt;
+    }
+
+    uint32_t blockIndex = freelist_head_index_;
+    freelist_head_index_ = getBlock(blockIndex).next;
+
+    return blockIndex;
 }
+
 }
