@@ -49,52 +49,10 @@ void LRUCache::put(KeyType key, ValueType value){
         bump(dest_index);
 
     }else{
-        // we have a free block on the free list
-        
-        dest_index = freelist_head_index_;
-        freelist_head_index_ = memory_[dest_index].next;
-
-        memory_[dest_index].prev = lru_tail_index_;
-        memory_[lru_tail_index_].next = dest_index;
-
-        memory_[dest_index].key = key;
-        memory_[dest_index].val = value;
-
-        lru_tail_index_ = dest_index;
-
-        bump(dest_index);
-
-
-    }
-
-    map_.insert({key, dest_index});
-
-    // memory_[dest_index].key = key;
-    // memory_[dest_index].val = value;
-
-    // memory_[lru_tail_index_].next = dest_index;
-    // lru_tail_index_ = dest_index;
-
-    // bump(dest_index);
-
-    // if(freelist_head_index_ != BLOCK_NULLPTR)
-    //     freelist_head_index_ = memory_[dest_index].next;
-
+Block& LRUCache::getBlock(uint32_t blockIndex){
+    // this function assumes valid blockIndex.
+    return memory_[blockIndex]; 
 }
-
-void LRUCache::bump(uint32_t nodeIndex){
-    if(nodeIndex == lru_head_index_) return;
-
-    Block& blockToBump = memory_[nodeIndex];
-    
-    Block& prevBlock = memory_[blockToBump.prev];
-    prevBlock.next = blockToBump.next;
-
-    if(nodeIndex != lru_tail_index_){
-        Block& nextBlock = memory_[blockToBump.next];
-        nextBlock.prev = blockToBump.prev;
-    }else{
-        lru_tail_index_ = blockToBump.prev;
     }
 
     blockToBump.prev = BLOCK_NULLPTR;
