@@ -10,10 +10,10 @@ using ValueType = int;
 
 
 struct Block{
-    unsigned int prev;
-    int key;
-    int val;
-    unsigned int next;
+    uint32_t prev;
+    KeyType key;
+    ValueType val;
+    uint32_t next;
 };
 
 class LRUCache {
@@ -27,7 +27,7 @@ public:
 
     explicit LRUCache(const uint32_t capacity);
     
-    std::optional<int> get(KeyType key); 
+    std::optional<ValueType> get(KeyType key); 
 
     void put(KeyType key, ValueType value);
 private:
