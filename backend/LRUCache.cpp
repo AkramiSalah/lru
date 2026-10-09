@@ -83,4 +83,44 @@ std::optional<uint32_t> LRUCache::allocBlock(){
     return blockIndex;
 }
 
+
+void LRUCache::lru_list_push_back(uint32_t blockIndex){
+    if(lru_head_index_ == BLOCK_NULLPTR && lru_tail_index_ == BLOCK_NULLPTR){
+        getBlock(blockIndex).prev = BLOCK_NULLPTR;
+        getBlock(blockIndex).next = BLOCK_NULLPTR;
+
+        lru_head_index_ = blockIndex;
+        lru_tail_index_ = blockIndex;
+    }
+    else if(lru_head_index_ != BLOCK_NULLPTR && lru_tail_index_ != BLOCK_NULLPTR){
+        getBlock(blockIndex).prev = lru_tail_index_;
+        getBlock(blockIndex).next = BLOCK_NULLPTR;
+
+        getBlock(lru_tail_index_).next = blockIndex;
+        lru_tail_index_ = blockIndex;
+    }
+    else{
+        throw std::logic_error("somehow lru head is set but tail isnt, or exact opposite");
+    }
+}
+
+
+void LRUCache::lru_list_push_front(uint32_t blockIndex){
+    if(lru_head_index_ == BLOCK_NULLPTR && lru_tail_index_ == BLOCK_NULLPTR){
+        getBlock(blockIndex).prev = BLOCK_NULLPTR;
+        getBlock(blockIndex).next = BLOCK_NULLPTR;
+
+        lru_head_index_ = blockIndex;
+        lru_tail_index_ = blockIndex;
+    }
+    else if(lru_head_index_ != BLOCK_NULLPTR && lru_tail_index_ != BLOCK_NULLPTR){
+        getBlock(blockIndex).prev = BLOCK_NULLPTR;
+        getBlock(blockIndex).next = lru_head_index_;
+
+        getBlock(lru_head_index_).prev = blockIndex;
+        lru_head_index_ = blockIndex;
+    }
+    else{
+        throw std::logic_error("somehow lru head is set but tail isnt, or exact opposite");
+    }
 }
