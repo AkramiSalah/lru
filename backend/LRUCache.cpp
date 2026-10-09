@@ -1,19 +1,31 @@
 #include "LRUCache.hpp"
+#include <cstdint>
 #include <optional>
 #include <stdexcept>
 
-LRUCache::LRUCache(const uint32_t capacity) : capacity_(capacity), memory_(new Block[capacity_]), freelist_head_index_(0), lru_head_index_(0), lru_tail_index_(0) {
+LRUCache::LRUCache(const uint32_t capacity) :
+    capacity_(capacity),
+    memory_(new Block[capacity_]),
+    freelist_head_index_(0),
+    lru_head_index_(BLOCK_NULLPTR),
+    lru_tail_index_(BLOCK_NULLPTR)
+{
+
     if(capacity_ == 0) throw std::invalid_argument("capacity must be greater than 0 !!!");
     if(capacity_ > MAX_CAPACITY) throw std::out_of_range("capacity must be smaller than the maximum unsigned 32bit integer!!!");
 
     map_.reserve(capacity);
+    
     auto prev_index = BLOCK_NULLPTR;
-
+    
+    KeyType dummyKey = 0xDEADBEEF; // For debugging purposes
+    ValueType dummyValue = 0xBABECAFE; // TODO : REMOVE LATER!!!!!
+    
     for(uint32_t i = 0; i < capacity_ - 1; ++i){
-        memory_[i] = Block{.prev = prev_index, .next = i+1};
+        memory_[i] = Block{.prev = prev_index, .key = dummyKey, .val = dummyValue, .next = i+1,};
         prev_index = i;
     }
-    memory_[capacity_ - 1] = Block{.prev = prev_index, .next = BLOCK_NULLPTR};
+    memory_[capacity_ - 1] = Block{.prev = prev_index, .key = dummyKey, .val = dummyValue, .next = BLOCK_NULLPTR};
 
 }
 
