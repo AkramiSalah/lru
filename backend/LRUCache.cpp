@@ -53,9 +53,24 @@ Block& LRUCache::getBlock(uint32_t blockIndex){
     // this function assumes valid blockIndex.
     return memory_[blockIndex]; 
 }
+
+void LRUCache::detachBlock(uint32_t blockIndex){
+    // this function assumes that the block at blockIndex is allocated.
+    auto& block = getBlock(blockIndex);
+    if(blockIndex == lru_tail_index_){
+        lru_tail_index_ = block.prev;
     }
 
-    blockToBump.prev = BLOCK_NULLPTR;
-    blockToBump.next = lru_head_index_;
-    lru_head_index_ = nodeIndex;    
+    if(blockIndex == lru_head_index_){
+        lru_head_index_ = block.next;
+    }
+
+    if(block.next != BLOCK_NULLPTR){
+        getBlock(block.next).prev = block.prev;
+    }
+
+    if(block.prev != BLOCK_NULLPTR){
+        getBlock(block.prev).next = block.next;
+    }
+}
 }
