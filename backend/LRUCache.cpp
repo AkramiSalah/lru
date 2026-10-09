@@ -13,7 +13,6 @@ LRUCache::LRUCache(const uint32_t capacity) :
 
     if(capacity_ == 0) throw std::invalid_argument("capacity must be greater than 0 !!!");
     if(capacity_ > MAX_CAPACITY) throw std::out_of_range("capacity must be smaller than the maximum unsigned 32bit integer!!!");
-
     map_.reserve(capacity);
     
     auto prev_index = BLOCK_NULLPTR;
@@ -29,26 +28,46 @@ LRUCache::LRUCache(const uint32_t capacity) :
 
 }
 
-std::optional<KeyType> LRUCache::get(KeyType key){
+std::optional<ValueType> LRUCache::get(KeyType key){
     auto it = map_.find(key);
     if(it == map_.end()) return std::nullopt;
     
     bump(it->second);
-    return memory_[it->second].val;
+    return getBlock(it->second).val;
 }
 
+
+void LRUCache::bump(uint32_t blockIndex){
+    detachBlock( blockIndex);
+    lru_list_push_front( blockIndex);
+}
+
+
 void LRUCache::put(KeyType key, ValueType value){
-    uint32_t dest_index = freelist_head_index_;
+    auto it = map_.find(key);
+    uint32_t index;
 
-    if(freelist_head_index_ == BLOCK_NULLPTR){
-        dest_index = lru_tail_index_;
-        map_.erase(memory_[dest_index].key);
-        memory_[dest_index].key = key;
-        memory_[dest_index].val = value;
-
-        bump(dest_index);
-
+    if(it != map_.end()){
+        index = it->second;
+    }else if(freelist_head_index_ == BLOCK_NULLPTR){
+        map_.erase(getBlock(lru_tail_index_).key);
+        index = lru_tail_index_;
+        map_.insert({key, index});
     }else{
+        index = freelist_head_index_;
+        map_.insert({key, index});
+        freelist_head_index_= getBlock(freelist_head_index_).next;
+    }
+
+    auto& block = getBlock(index);
+    block.key = key;
+    block.val = value;
+    bump(index);
+}
+
+
+
+
 Block& LRUCache::getBlock(uint32_t blockIndex){
     // this function assumes valid blockIndex.
     return memory_[blockIndex]; 
@@ -72,6 +91,8 @@ void LRUCache::detachBlock(uint32_t blockIndex){
     if(block.prev != BLOCK_NULLPTR){
         getBlock(block.prev).next = block.next;
     }
+}
+
 std::optional<uint32_t> LRUCache::allocBlock(){
     if(freelist_head_index_ == BLOCK_NULLPTR){
         return std::nullopt;
