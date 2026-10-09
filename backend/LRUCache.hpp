@@ -41,6 +41,16 @@ private:
     static constexpr uint32_t MAX_CAPACITY = 0xFFFFFFFF - 1; 
 
 
-    void bump(uint32_t nodeIndex);
+    Block& getBlock(uint32_t blockIndex);
+    
+    void detachBlock(uint32_t blockIndex);
+    
+    void lru_list_push_back(uint32_t blockIndex);
+    
+    void lru_list_push_front(uint32_t blockIndex);
+    
+    std::optional<uint32_t> allocBlock();
+    
+    void bump(uint32_t blockIndex);
 };
 
