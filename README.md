@@ -27,4 +27,4 @@ it receives commands from the front end
 
 
 ### compilation command:
-g++ -std=c++20 -g -Wall -Wextra main.cpp frontend/Reader.cpp handlers/CommandHandler.cpp backend/LRUCache.cpp -o lru
+g++ -std=c++20 -g -Wall -Wextra main.cpp frontend/*.cpp backend/*.cpp handlers/*.cpp -o lru
