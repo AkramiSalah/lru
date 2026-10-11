@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <optional>
 #include <unordered_map>
+#include "LinkedList.hpp"
 
 
 
@@ -18,39 +19,22 @@ struct Block{
 
 class LRUCache {
 public:
-    using KeyType = int;
-    using ValueType = int;
 
-    static constexpr uint32_t BLOCK_NULLPTR = 0xFFFFFFFF; 
+    explicit LRUCache(uint32_t capacity);
+    ~LRUCache() = default;
 
-    LRUCache() = delete; // an LRU cache has to have a capacity!
-
-    explicit LRUCache(const uint32_t capacity);
+    // This class has a non copyable, non moveable member (LinkedList) 
+    LRUCache(const LRUCache&) = delete;
+    LRUCache& operator=(const LRUCache&) = delete;
+    LRUCache(LRUCache&&) = delete;
+    LRUCache& operator= (LRUCache&&) = delete;
     
     std::optional<ValueType> get(KeyType key); 
 
     void put(KeyType key, ValueType value);
 private:
-    const uint32_t capacity_;
-    Block* memory_;
-    uint32_t freelist_head_index_;
-    uint32_t lru_head_index_;
-    uint32_t lru_tail_index_;
+    LinkedList linkedList;
     std::unordered_map<KeyType, uint32_t> map_; // holds key, and the index of the corrosponding AllocaedBlock 
 
-    static constexpr uint32_t MAX_CAPACITY = 0xFFFFFFFF - 1; 
-
-
-    Block& getBlock(uint32_t blockIndex);
-    
-    void detachBlock(uint32_t blockIndex);
-    
-    void lru_list_push_back(uint32_t blockIndex);
-    
-    void lru_list_push_front(uint32_t blockIndex);
-    
-    std::optional<uint32_t> allocBlock();
-    
     void bump(uint32_t blockIndex);
 };
-

@@ -1,47 +1,18 @@
 #include "LRUCache.hpp"
+#include "LinkedList.hpp"
 #include <cstdint>
 #include <optional>
-#include <stdexcept>
 
-LRUCache::LRUCache(const uint32_t capacity) :
-    capacity_(capacity),
-    memory_(new Block[capacity_]),
-    freelist_head_index_(0),
-    lru_head_index_(BLOCK_NULLPTR),
-    lru_tail_index_(BLOCK_NULLPTR)
-{
 
-    if(capacity_ == 0) throw std::invalid_argument("capacity must be greater than 0 !!!");
-    if(capacity_ > MAX_CAPACITY) throw std::out_of_range("capacity must be smaller than the maximum unsigned 32bit integer!!!");
-    map_.reserve(capacity);
-    
-    auto prev_index = BLOCK_NULLPTR;
-    
-    KeyType dummyKey = 0xDEADBEEF; // For debugging purposes
-    ValueType dummyValue = 0xBABECAFE; // TODO : REMOVE LATER!!!!!
-    
-    for(uint32_t i = 0; i < capacity_ - 1; ++i){
-        memory_[i] = Block{.prev = prev_index, .key = dummyKey, .val = dummyValue, .next = i+1,};
-        prev_index = i;
-    }
-    memory_[capacity_ - 1] = Block{.prev = prev_index, .key = dummyKey, .val = dummyValue, .next = BLOCK_NULLPTR};
-
-}
+LRUCache::LRUCache(uint32_t capacity) : linkedList(capacity){}
 
 std::optional<ValueType> LRUCache::get(KeyType key){
     auto it = map_.find(key);
     if(it == map_.end()) return std::nullopt;
     
     bump(it->second);
-    return getBlock(it->second).val;
+    return linkedList.getNode(it->second).value;
 }
-
-
-void LRUCache::bump(uint32_t blockIndex){
-    detachBlock( blockIndex);
-    lru_list_push_front( blockIndex);
-}
-
 
 void LRUCache::put(KeyType key, ValueType value){
     auto it = map_.find(key);
@@ -49,99 +20,20 @@ void LRUCache::put(KeyType key, ValueType value){
 
     if(it != map_.end()){
         index = it->second;
-    }else if(freelist_head_index_ == BLOCK_NULLPTR){
-        map_.erase(getBlock(lru_tail_index_).key);
-        index = lru_tail_index_;
-        map_.insert({key, index});
-    }else{
-        index = freelist_head_index_;
-        map_.insert({key, index});
-        freelist_head_index_= getBlock(freelist_head_index_).next;
+    }
+    else{
+        auto newNodeIndex = linkedList.createNode(key, value);
+        index = newNodeIndex.value_or(linkedList.getTail());
     }
 
-    auto& block = getBlock(index);
-    block.key = key;
-    block.val = value;
+    auto& node = linkedList.getNode(index);
+    node.key = key;
+    node.value = value;
+    map_.insert({key, index});
     bump(index);
 }
 
-
-
-
-Block& LRUCache::getBlock(uint32_t blockIndex){
-    // this function assumes valid blockIndex.
-    return memory_[blockIndex]; 
-}
-
-void LRUCache::detachBlock(uint32_t blockIndex){
-    // this function assumes that the block at blockIndex is allocated.
-    auto& block = getBlock(blockIndex);
-    if(blockIndex == lru_tail_index_){
-        lru_tail_index_ = block.prev;
-    }
-
-    if(blockIndex == lru_head_index_){
-        lru_head_index_ = block.next;
-    }
-
-    if(block.next != BLOCK_NULLPTR){
-        getBlock(block.next).prev = block.prev;
-    }
-
-    if(block.prev != BLOCK_NULLPTR){
-        getBlock(block.prev).next = block.next;
-    }
-}
-
-std::optional<uint32_t> LRUCache::allocBlock(){
-    if(freelist_head_index_ == BLOCK_NULLPTR){
-        return std::nullopt;
-    }
-
-    uint32_t blockIndex = freelist_head_index_;
-    freelist_head_index_ = getBlock(blockIndex).next;
-
-    return blockIndex;
-}
-
-
-void LRUCache::lru_list_push_back(uint32_t blockIndex){
-    if(lru_head_index_ == BLOCK_NULLPTR && lru_tail_index_ == BLOCK_NULLPTR){
-        getBlock(blockIndex).prev = BLOCK_NULLPTR;
-        getBlock(blockIndex).next = BLOCK_NULLPTR;
-
-        lru_head_index_ = blockIndex;
-        lru_tail_index_ = blockIndex;
-    }
-    else if(lru_head_index_ != BLOCK_NULLPTR && lru_tail_index_ != BLOCK_NULLPTR){
-        getBlock(blockIndex).prev = lru_tail_index_;
-        getBlock(blockIndex).next = BLOCK_NULLPTR;
-
-        getBlock(lru_tail_index_).next = blockIndex;
-        lru_tail_index_ = blockIndex;
-    }
-    else{
-        throw std::logic_error("somehow lru head is set but tail isnt, or exact opposite");
-    }
-}
-
-
-void LRUCache::lru_list_push_front(uint32_t blockIndex){
-    if(lru_head_index_ == BLOCK_NULLPTR && lru_tail_index_ == BLOCK_NULLPTR){
-        getBlock(blockIndex).prev = BLOCK_NULLPTR;
-        getBlock(blockIndex).next = BLOCK_NULLPTR;
-
-        lru_head_index_ = blockIndex;
-        lru_tail_index_ = blockIndex;
-    }
-    else if(lru_head_index_ != BLOCK_NULLPTR && lru_tail_index_ != BLOCK_NULLPTR){
-        getBlock(blockIndex).prev = BLOCK_NULLPTR;
-        getBlock(blockIndex).next = lru_head_index_;
-
-        getBlock(lru_head_index_).prev = blockIndex;
-        lru_head_index_ = blockIndex;
-    }
-    else{
-        throw std::logic_error("somehow lru head is set but tail isnt, or exact opposite");
-    }
+void LRUCache::bump(uint32_t blockIndex){
+    linkedList.detachNode(blockIndex);
+    linkedList.push_front(blockIndex);
 }
