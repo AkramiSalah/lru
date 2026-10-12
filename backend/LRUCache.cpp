@@ -19,19 +19,26 @@ std::optional<ValueType> LRUCache::get(KeyType key){
 void LRUCache::put(KeyType key, ValueType value){
     auto it = map_.find(key);
     uint32_t index;
-
     if(it != map_.end()){
         index = it->second;
+        auto& node = linkedList.getNode(index);
+        node.value = value;
+    }
+    else if(linkedList.full()){
+        index = linkedList.getTailIndex();
+        auto& node = linkedList.getNode(index);
+
+        map_.erase(node.key);
+        map_.emplace(key, index);
+
+        node.key = key;
+        node.value = value;
     }
     else{
-        auto newNodeIndex = linkedList.createNode(key, value);
-        index = newNodeIndex.value_or(linkedList.getTail());
+        index = linkedList.createNode(key, value).value(); // i know for a fact createNode cant fail since LL isnt full.
+        map_.emplace(key, index);
     }
 
-    auto& node = linkedList.getNode(index);
-    node.key = key;
-    node.value = value;
-    map_.insert({key, index});
     bump(index);
 }
 
