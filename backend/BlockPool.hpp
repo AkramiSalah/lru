@@ -24,11 +24,11 @@ public:
     BlockPool(BlockPool&&) = delete;
 
     struct FreeBlock {
-    uint32_t next;
+        uint32_t next;
     };
 
     struct UserBlock {
-        char payload[sizeof(T)];
+        T payload;
     };
 
     union Slot {
@@ -38,6 +38,8 @@ public:
 
     std::optional<uint32_t> allocBlock();
     UserBlock& getBlock(uint32_t blockIndex);
+
+    bool full() const;
     // void freeBlock(uint32_t blockIndex); // Youd think i need it, but i really dont! so YAGNI. explination in the relevant commit, check git blame.
 
     // the fact that this Block allocator is used for an LRUCache makes it so that i never ever have to free a block
@@ -48,6 +50,12 @@ private:
     Slot* memory_;
     uint32_t freelist_head_index_;
 };
+
+template<typename T>
+inline bool BlockPool<T>::full() const{
+    return freelist_head_index_ == BLOCK_NULLPTR;
+}
+
 template<typename T>
 auto BlockPool<T>::getBlock(uint32_t blockIndex) -> UserBlock&{
     // this function assumes valid blockIndex.
@@ -56,7 +64,7 @@ auto BlockPool<T>::getBlock(uint32_t blockIndex) -> UserBlock&{
 
 template<typename T>
 std::optional<uint32_t> BlockPool<T>::allocBlock(){
-    if(freelist_head_index_ == BLOCK_NULLPTR){
+    if(full()){
         return std::nullopt;
     }
 

@@ -2,8 +2,9 @@
 
 LinkedList::LinkedList(uint32_t capacity) : blockPool_(capacity){}
 
-uint32_t LinkedList::getTail() const { return tailIndex_; }
-uint32_t LinkedList::getHead() const { return headIndex_; }
+uint32_t LinkedList::getTailIndex() const { return tailIndex_; }
+uint32_t LinkedList::getHeadIndex() const { return headIndex_; }
+bool LinkedList::full() const { return blockPool_.full(); }
 
 auto LinkedList::getNode(uint32_t blockIndex) -> Node&{
     return *(Node*)(blockPool_.getBlock(blockIndex).payload);

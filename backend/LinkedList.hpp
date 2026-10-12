@@ -28,8 +28,9 @@ public:
     LinkedList& operator= (LinkedList&&) = delete;
 
     
-    uint32_t getTail() const;
-    uint32_t getHead() const;
+    uint32_t getTailIndex() const;
+    uint32_t getHeadIndex() const;
+    bool full() const;
     
     Node& getNode(uint32_t blockIndex);
     
