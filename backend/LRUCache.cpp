@@ -4,7 +4,9 @@
 #include <optional>
 
 
-LRUCache::LRUCache(uint32_t capacity) : linkedList(capacity){}
+LRUCache::LRUCache(uint32_t capacity) : linkedList(capacity){
+    map_.reserve(capacity);
+}
 
 std::optional<ValueType> LRUCache::get(KeyType key){
     auto it = map_.find(key);
