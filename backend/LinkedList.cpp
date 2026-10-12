@@ -7,7 +7,7 @@ uint32_t LinkedList::getHeadIndex() const { return headIndex_; }
 bool LinkedList::full() const { return blockPool_.full(); }
 
 auto LinkedList::getNode(uint32_t blockIndex) -> Node&{
-    return *(Node*)(blockPool_.getBlock(blockIndex).payload);
+    return blockPool_.getBlock(blockIndex).payload;
 }
 
 std::optional<uint32_t> LinkedList::createNode(KeyType key, ValueType value){
@@ -15,9 +15,11 @@ std::optional<uint32_t> LinkedList::createNode(KeyType key, ValueType value){
     if(!blockIndex) return std::nullopt;
 
     Node& node = getNode(blockIndex.value());
+    node.prev = BLOCK_NULLPTR;
     node.key = key;
     node.value = value;
-
+    node.next = BLOCK_NULLPTR;
+    
     return blockIndex.value();
 }
 
