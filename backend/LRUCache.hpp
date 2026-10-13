@@ -4,18 +4,8 @@
 #include <unordered_map>
 #include "LinkedList.hpp"
 
-
-
 using KeyType = int;
 using ValueType = int;
-
-
-struct Block{
-    uint32_t prev;
-    KeyType key;
-    ValueType val;
-    uint32_t next;
-};
 
 class LRUCache {
 public:
