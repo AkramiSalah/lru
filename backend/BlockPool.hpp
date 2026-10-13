@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdint>
-#include <optional>
 #include <stdexcept>
 
 static constexpr uint32_t BLOCK_NULLPTR = 0xFFFFFFFF;
@@ -36,7 +35,7 @@ public:
         FreeBlock freeBlock;
     };
 
-    std::optional<uint32_t> allocBlock();
+    uint32_t allocBlock();
     UserBlock& getBlock(uint32_t blockIndex);
 
     bool full() const;
@@ -63,9 +62,11 @@ auto BlockPool<T>::getBlock(uint32_t blockIndex) -> UserBlock&{
 }
 
 template<typename T>
-std::optional<uint32_t> BlockPool<T>::allocBlock(){
+
+template<typename T>
+uint32_t BlockPool<T>::allocBlock(){
     if(full()){
-        return std::nullopt;
+        return BLOCK_NULLPTR;
     }
 
     uint32_t blockIndex = freelist_head_index_;
