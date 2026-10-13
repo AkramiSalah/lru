@@ -7,5 +7,5 @@ public:
     explicit Reader(std::istream& is = std::cin);
     std::vector<std::string> readCommand();
 private:
-    std::istream& is_;
+    std::istream& m_inStream;
 };

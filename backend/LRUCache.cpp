@@ -4,44 +4,44 @@
 #include <optional>
 
 
-LRUCache::LRUCache(uint32_t capacity) : linkedList(capacity){
-    map_.reserve(capacity);
+LRUCache::LRUCache(uint32_t capacity) : m_linkedList(capacity){
+    m_map.reserve(capacity);
 }
 
 std::optional<ValueType> LRUCache::get(KeyType key){
-    auto it = map_.find(key);
-    if(it == map_.end()) return std::nullopt;
+    auto it = m_map.find(key);
+    if(it == m_map.end()) return std::nullopt;
     
     bump(it->second);
-    return linkedList.getNode(it->second).value;
+    return m_linkedList.getNode(it->second).value;
 }
 
 void LRUCache::put(KeyType key, ValueType value){
-    auto it = map_.find(key);
+    auto it = m_map.find(key);
     uint32_t index;
-    if(it != map_.end()){
+    if(it != m_map.end()){
         index = it->second;
-        auto& node = linkedList.getNode(index);
+        auto& node = m_linkedList.getNode(index);
         node.value = value;
     }
-    else if(linkedList.full()){
-        index = linkedList.getTailIndex();
-        auto& node = linkedList.getNode(index);
+    else if(m_linkedList.full()){
+        index = m_linkedList.getTailIndex();
+        auto& node = m_linkedList.getNode(index);
 
         // map_.erase(node.key);
         // map_.insert({key, index});
 
-        auto nh = map_.extract(node.key);
+        auto nh = m_map.extract(node.key);
         nh.key() = key;
 
-        map_.insert(std::move(nh));
+        m_map.insert(std::move(nh));
 
         node.key = key;
         node.value = value;
     }
     else{
-        index = linkedList.create_node_at_front(key, value); // i know for a fact createNode cant fail since LL isnt full.
-        map_.emplace(key, index);
+        index = m_linkedList.create_node_at_front(key, value); // i know for a fact createNode cant fail since LL isnt full.
+        m_map.emplace(key, index);
         return; // no need to bump, node was created at front.
     }
 
@@ -49,7 +49,7 @@ void LRUCache::put(KeyType key, ValueType value){
 }
 
 void LRUCache::bump(uint32_t blockIndex){
-    if(linkedList.getHeadIndex() == blockIndex) return;
-    linkedList.detachNode(blockIndex);
-    linkedList.push_front(blockIndex);
+    if(m_linkedList.getHeadIndex() == blockIndex) return;
+    m_linkedList.detachNode(blockIndex);
+    m_linkedList.push_front(blockIndex);
 }

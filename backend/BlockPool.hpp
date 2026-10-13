@@ -46,26 +46,26 @@ public:
     // since when the LRUCache is at full capacity and a new item is to be inserted i reuse the least recently used block.
     
 private:
-    const uint32_t blockCount;
-    Slot* memory_;
-    uint32_t freelist_head_index_;
+    const uint32_t m_blockCount;
+    Slot* m_data;
+    uint32_t m_freelist_head_index;
 };
 
 template<typename T>
 inline bool BlockPool<T>::full() const{
-    return freelist_head_index_ == BLOCK_NULLPTR;
+    return m_freelist_head_index == BLOCK_NULLPTR;
 }
 
 template<typename T>
 auto BlockPool<T>::getBlock(uint32_t blockIndex) -> UserBlock&{
     // this function assumes valid blockIndex.
-    return memory_[blockIndex].userBlock; 
+    return m_data[blockIndex].userBlock; 
 }
 
 template<typename T>
 auto BlockPool<T>::getBlock(uint32_t blockIndex) const -> const UserBlock&{
     // this function assumes valid blockIndex.
-    return memory_[blockIndex].userBlock; 
+    return m_data[blockIndex].userBlock; 
 }
 
 template<typename T>
@@ -74,25 +74,25 @@ uint32_t BlockPool<T>::allocBlock(){
         return BLOCK_NULLPTR;
     }
 
-    uint32_t blockIndex = freelist_head_index_;
-    freelist_head_index_ = memory_[blockIndex].freeBlock.next;
+    uint32_t blockIndex = m_freelist_head_index;
+    m_freelist_head_index = m_data[blockIndex].freeBlock.next;
 
     return blockIndex;
 }
 
 template<typename T>
-BlockPool<T>::BlockPool(uint32_t blockCount) : blockCount(blockCount), freelist_head_index_(0){
+BlockPool<T>::BlockPool(uint32_t blockCount) : m_blockCount(blockCount), m_freelist_head_index(0){
     if(blockCount == 0) throw std::invalid_argument("block count must be greater than 0 !!!");
     if(blockCount > MAX_CAPACITY) throw std::invalid_argument("capacity must be smaller than the maximum unsigned 32bit integer!!!");
 
-    memory_ = new Slot[blockCount];
+    m_data = new Slot[blockCount];
     for(uint32_t i = 0; i < blockCount - 1; ++i){
-        memory_[i].freeBlock.next =  i+1;
+        m_data[i].freeBlock.next =  i+1;
     }
-    memory_[blockCount - 1].freeBlock.next = BLOCK_NULLPTR;
+    m_data[blockCount - 1].freeBlock.next = BLOCK_NULLPTR;
 }
 
 template<typename T>
 BlockPool<T>::~BlockPool() {
-    delete[] memory_; 
+    delete[] m_data; 
 }

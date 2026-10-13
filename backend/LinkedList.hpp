@@ -27,13 +27,13 @@ public:
     LinkedList(LinkedList&&) = delete;
     LinkedList& operator= (LinkedList&&) = delete;
 
-    bool full() const { return blockPool_.full(); }
+    bool full() const { return m_blockPool.full(); }
     
-    uint32_t getTailIndex() const { return this->getNode(tailSentinel_).prev; }
-    uint32_t getHeadIndex() const { return this->getNode(headSentinel_).next; }
+    uint32_t getTailIndex() const { return this->getNode(m_tailSentinel_index).prev; }
+    uint32_t getHeadIndex() const { return this->getNode(m_headSentinel_index).next; }
     
-    Node& getNode(uint32_t blockIndex) { return blockPool_.getBlock(blockIndex).payload; }
-    const Node& getNode(uint32_t blockIndex) const { return blockPool_.getBlock(blockIndex).payload; }
+    Node& getNode(uint32_t blockIndex) { return m_blockPool.getBlock(blockIndex).payload; }
+    const Node& getNode(uint32_t blockIndex) const { return m_blockPool.getBlock(blockIndex).payload; }
 
     uint32_t createNode(KeyType key, ValueType value);
 
@@ -46,28 +46,28 @@ public:
     uint32_t create_node_at_front(KeyType key, ValueType value);
 
 private:
-    uint32_t headSentinel_;
-    uint32_t tailSentinel_;
-    BlockPool<Node> blockPool_;
+    uint32_t m_headSentinel_index;
+    uint32_t m_tailSentinel_index;
+    BlockPool<Node> m_blockPool;
 };
 
-inline LinkedList::LinkedList(uint32_t capacity) : blockPool_(capacity + 2){
-    headSentinel_ = blockPool_.allocBlock();
-    tailSentinel_ = blockPool_.allocBlock();
+inline LinkedList::LinkedList(uint32_t capacity) : m_blockPool(capacity + 2){
+    m_headSentinel_index = m_blockPool.allocBlock();
+    m_tailSentinel_index = m_blockPool.allocBlock();
 
-    auto& head = getNode(headSentinel_);
-    auto& tail = getNode(tailSentinel_);
+    auto& head = getNode(m_headSentinel_index);
+    auto& tail = getNode(m_tailSentinel_index);
 
     head.prev = BLOCK_NULLPTR;
-    head.next = tailSentinel_;
+    head.next = m_tailSentinel_index;
 
-    tail.prev = headSentinel_;
+    tail.prev = m_headSentinel_index;
     tail.next = BLOCK_NULLPTR;
 }
 
 
 inline uint32_t LinkedList::createNode(KeyType key, ValueType value){
-    auto blockIndex = blockPool_.allocBlock();
+    auto blockIndex = m_blockPool.allocBlock();
     if(blockIndex == BLOCK_NULLPTR) return BLOCK_NULLPTR;
 
     Node& node = getNode(blockIndex);
@@ -88,20 +88,20 @@ inline void LinkedList::detachNode(uint32_t blockIndex){
 }
 
 inline void LinkedList::push_front(uint32_t blockIndex){
-    uint32_t oldHeadIndex = getNode(headSentinel_).next;
+    uint32_t oldHeadIndex = getNode(m_headSentinel_index).next;
 
     Node& node = getNode(blockIndex);
-    node.prev = headSentinel_;
+    node.prev = m_headSentinel_index;
     node.next = oldHeadIndex;
 
     getNode(oldHeadIndex).prev = blockIndex;
-    getNode(headSentinel_).next = blockIndex;
+    getNode(m_headSentinel_index).next = blockIndex;
 
 }
 
 inline uint32_t LinkedList::create_node_at_front(KeyType key, ValueType value){
     // this function assumes that the LL is NOT full
-    auto blockIndex = blockPool_.allocBlock();
+    auto blockIndex = m_blockPool.allocBlock();
 
     Node& node = getNode(blockIndex);
     node.key = key;

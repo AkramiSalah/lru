@@ -10,6 +10,8 @@ public:
 
     std::string handleCommand(const std::vector<std::string>& command);
 private:
+    static constexpr char M_USAGE_STRING[] = "Usage: SET <key> <value>\n";
+
     LRUCache& cache_;
 
     //helpers
@@ -19,6 +21,6 @@ private:
 
     std::string handleGet(const std::vector<std::string>& command);
 
-    std::string handleSet(const std::vector<std::string>& command);
+    std::string handlePut(const std::vector<std::string>& command);
 
 };

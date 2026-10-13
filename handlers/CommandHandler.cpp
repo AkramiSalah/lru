@@ -9,12 +9,12 @@ std::string CommandHandler::handleCommand(const std::vector<std::string>& comman
     }
     else if(command[0] == "GET"){
         return handleGet(command);
-    }else if (command[0] == "SET"){
-        return handleSet(command);
+    }else if (command[0] == "PUT"){
+        return handlePut(command);
     }
 
     //else
-    return "Usage:\n SET <key> <value>\n GET <key>";
+    return M_USAGE_STRING;
 }
 
 // helpers
@@ -60,7 +60,7 @@ std::string CommandHandler::handleGet(const std::vector<std::string>& command){
     return "Not Found: this value was either never in the cache, or was in the cache, but was evicted.";
 }
 
-std::string CommandHandler::handleSet(const std::vector<std::string>& command){
+std::string CommandHandler::handlePut(const std::vector<std::string>& command){
     std::string errorString = "Usage: SET <key> <value>\n";
     if(command.size() < 3){
         return errorString + "didn't get a key, or a value, or both. try again.";

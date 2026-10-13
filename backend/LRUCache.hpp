@@ -23,8 +23,8 @@ public:
 
     void put(KeyType key, ValueType value);
 private:
-    LinkedList linkedList;
-    std::unordered_map<KeyType, uint32_t> map_; // holds key, and the index of the corrosponding AllocaedBlock 
+    LinkedList m_linkedList;
+    std::unordered_map<KeyType, uint32_t> m_map; // holds key, and the index of the corrosponding AllocaedBlock 
 
     void bump(uint32_t blockIndex);
 };
