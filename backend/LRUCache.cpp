@@ -28,15 +28,21 @@ void LRUCache::put(KeyType key, ValueType value){
         index = linkedList.getTailIndex();
         auto& node = linkedList.getNode(index);
 
-        map_.erase(node.key);
-        map_.emplace(key, index);
+        // map_.erase(node.key);
+        // map_.insert({key, index});
+
+        auto nh = map_.extract(node.key);
+        nh.key() = key;
+
+        map_.insert(std::move(nh));
 
         node.key = key;
         node.value = value;
     }
     else{
-        index = linkedList.createNode(key, value).value(); // i know for a fact createNode cant fail since LL isnt full.
+        index = linkedList.create_node_at_front(key, value); // i know for a fact createNode cant fail since LL isnt full.
         map_.emplace(key, index);
+        return; // no need to bump, node was created at front.
     }
 
     bump(index);
