@@ -43,6 +43,7 @@ void LRUCache::put(KeyType key, ValueType value){
 }
 
 void LRUCache::bump(uint32_t blockIndex){
+    if(linkedList.getHeadIndex() == blockIndex) return;
     linkedList.detachNode(blockIndex);
     linkedList.push_front(blockIndex);
 }
