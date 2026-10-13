@@ -37,6 +37,7 @@ public:
 
     uint32_t allocBlock();
     UserBlock& getBlock(uint32_t blockIndex);
+    const UserBlock& getBlock(uint32_t blockIndex) const;
 
     bool full() const;
     // void freeBlock(uint32_t blockIndex); // Youd think i need it, but i really dont! so YAGNI. explination in the relevant commit, check git blame.
@@ -62,6 +63,10 @@ auto BlockPool<T>::getBlock(uint32_t blockIndex) -> UserBlock&{
 }
 
 template<typename T>
+auto BlockPool<T>::getBlock(uint32_t blockIndex) const -> const UserBlock&{
+    // this function assumes valid blockIndex.
+    return memory_[blockIndex].userBlock; 
+}
 
 template<typename T>
 uint32_t BlockPool<T>::allocBlock(){
