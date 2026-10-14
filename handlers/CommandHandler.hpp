@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include <optional>
-#include "../backend/LRUCache.hpp"
+#include "../custom-backend/LRUCache.hpp"
 
 class CommandHandler{
 public:    
@@ -10,6 +10,10 @@ public:
 
     std::string handleCommand(const std::vector<std::string>& command);
 private:
+    static constexpr std::string_view S_GET_USAGE_STRING = "Usage:\n GET <key>\n";
+    static constexpr std::string_view S_PUT_USAGE_STRING = "Usage:\n PUT <key> <value>\n";
+    static constexpr std::string_view S_GENERAL_USAGE_STRING = "Usage:\n PUT <key> <value>\n GET <key>";
+
     LRUCache& cache_;
 
     //helpers
@@ -19,6 +23,6 @@ private:
 
     std::string handleGet(const std::vector<std::string>& command);
 
-    std::string handleSet(const std::vector<std::string>& command);
+    std::string handlePut(const std::vector<std::string>& command);
 
 };
