@@ -14,7 +14,7 @@ std::string CommandHandler::handleCommand(const std::vector<std::string>& comman
     }
 
     //else
-    return M_USAGE_STRING;
+    return std::string(S_GENERAL_USAGE_STRING);
 }
 
 // helpers
@@ -37,12 +37,12 @@ std::optional<std::string> CommandHandler::serializeInt(int n){
 }
 
 std::string CommandHandler::handleGet(const std::vector<std::string>& command){
-    std::string errorString = "Usage: GET <key>\n";
+
 
     if(command.size() < 2){
-        return errorString + "didn't get a key. try again.";
+        return std::string(S_GET_USAGE_STRING) + "didn't get a key. try again.";
     }else if(command.size() > 2){
-        return errorString  + "got too many arguments, try again.";
+        return std::string(S_GET_USAGE_STRING) + "got too many arguments, try again.";
     }
 
     auto deserializedKey = deserializeInt(command[1]);
@@ -61,7 +61,7 @@ std::string CommandHandler::handleGet(const std::vector<std::string>& command){
 }
 
 std::string CommandHandler::handlePut(const std::vector<std::string>& command){
-    std::string errorString = "Usage: SET <key> <value>\n";
+    std::string errorString = std::string(S_PUT_USAGE_STRING);
     if(command.size() < 3){
         return errorString + "didn't get a key, or a value, or both. try again.";
     }else if(command.size() > 3){
@@ -79,5 +79,5 @@ std::string CommandHandler::handlePut(const std::vector<std::string>& command){
     }
 
     cache_.put(deserializedKey.value(), deserializedValue.value());
-    return "key value pair was set";
+    return "Success !";
 }
