@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include "LinkedList.hpp"
 
+
+namespace custom {
+
 using KeyType = int;
 using ValueType = int;
 
@@ -28,3 +31,4 @@ private:
 
     void bump(uint32_t blockIndex);
 };
+}

@@ -4,6 +4,7 @@
 #include <optional>
 
 
+namespace custom {
 LRUCache::LRUCache(uint32_t capacity) : m_linkedList(capacity){
     m_map.reserve(capacity);
 }
@@ -27,15 +28,15 @@ void LRUCache::put(KeyType key, ValueType value){
     else if(m_linkedList.full()){
         index = m_linkedList.getTailIndex();
         auto& node = m_linkedList.getNode(index);
-
+        
         // map_.erase(node.key);
         // map_.insert({key, index});
-
+        
         auto nh = m_map.extract(node.key);
         nh.key() = key;
-
+        
         m_map.insert(std::move(nh));
-
+        
         node.key = key;
         node.value = value;
     }
@@ -44,7 +45,7 @@ void LRUCache::put(KeyType key, ValueType value){
         m_map.emplace(key, index);
         return; // no need to bump, node was created at front.
     }
-
+    
     bump(index);
 }
 
@@ -52,4 +53,6 @@ void LRUCache::bump(uint32_t blockIndex){
     if(m_linkedList.getHeadIndex() == blockIndex) return;
     m_linkedList.detachNode(blockIndex);
     m_linkedList.push_front(blockIndex);
+}
+    
 }

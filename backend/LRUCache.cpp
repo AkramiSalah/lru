@@ -4,6 +4,8 @@
 #include <optional>
 #include <unordered_map>
 
+namespace standart {
+
 LRUCache::LRUCache(size_t capacity) : capacity_(capacity) {
     map_.reserve(capacity_);
 }
@@ -41,4 +43,6 @@ void LRUCache::put(KeyType key, ValueType value) {
     list_.emplace_front(key,value);
     map_.insert({key, list_.begin()});
     evict();
+}
+
 }

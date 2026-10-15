@@ -3,6 +3,7 @@
 #include <optional>
 #include <unordered_map>
 
+namespace standart {
 class LRUCache {
 public:
     using KeyType = int;
@@ -27,3 +28,4 @@ private:
     void evict();
 
 };
+}
