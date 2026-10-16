@@ -2,3 +2,4 @@ archive/
 lru
 test
 .clangd
+bench
