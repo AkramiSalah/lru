@@ -15,7 +15,7 @@ public:
 
     explicit LRUCache(size_t capacity);
     
-    std::optional<int> get(KeyType key); 
+    std::optional<ValueType> get(KeyType key); 
 
     void put(KeyType key, ValueType value);
 private:

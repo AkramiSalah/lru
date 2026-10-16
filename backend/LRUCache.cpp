@@ -23,7 +23,7 @@ void LRUCache::evict(){
 }
 
 
-std::optional<int> LRUCache::get(KeyType key) {
+std::optional<LRUCache::ValueType> LRUCache::get(KeyType key) {
     auto nodeIterator = map_.find(key);
     if(nodeIterator != map_.end()){
         bump(nodeIterator->second);
