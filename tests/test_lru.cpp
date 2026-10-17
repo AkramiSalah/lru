@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cassert>
-#include "custom-backend/LRUCache.hpp"
+#include "../custom-backend/LRUCache.hpp"
 
 void test_capacity_one() {
-    LRUCache cache(1);
+    custom::LRUCache cache(1);
 
     cache.put(2, 1);
     assert(cache.get(2).value_or(-1) == 1);
@@ -16,7 +16,7 @@ void test_capacity_one() {
 }
 
 void test_update_does_not_evict() {
-    LRUCache cache(2);
+    custom::LRUCache cache(2);
 
     cache.put(1, 1);
     cache.put(2, 2);
@@ -31,7 +31,7 @@ void test_update_does_not_evict() {
 }
 
 void test_get_refreshes_recency() {
-    LRUCache cache(2);
+    custom::LRUCache cache(2);
 
     cache.put(1, 1);
     cache.put(2, 2);
