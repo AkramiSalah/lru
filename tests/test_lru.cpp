@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cassert>
-#include "../custom-backend/LRUCache.hpp"
+#include "../backend-custom/LRUCache.hpp"
 
 void test_capacity_one() {
     custom::LRUCache cache(1);

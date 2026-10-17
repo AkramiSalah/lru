@@ -29,9 +29,6 @@ void LRUCache::put(KeyType key, ValueType value){
         index = m_linkedList.getTailIndex();
         auto& node = m_linkedList.getNode(index);
         
-        // m_map.erase(node.key);
-        // m_map.insert({key, index});
-        
         auto nh = m_map.extract(node.key);
         nh.key() = key;
         
