@@ -6,26 +6,26 @@
 
 namespace standard {
 
-LRUCache::LRUCache(size_t capacity) : capacity_(capacity) {
-    map_.reserve(capacity_);
+LRUCache::LRUCache(size_t capacity) : m_capacity(capacity) {
+    m_map.reserve(m_capacity);
 }
 
 void LRUCache::bump(ListIter it){
-    list_.splice(list_.cbegin(), list_, it);
+    m_list.splice(m_list.cbegin(), m_list, it);
 }
 
 void LRUCache::evict(){
-    while(list_.size() > capacity_){
-        KeyType key = list_.back().first;
-        map_.erase(key);
-        list_.pop_back();
+    while(m_list.size() > m_capacity){
+        KeyType key = m_list.back().first;
+        m_map.erase(key);
+        m_list.pop_back();
     }
 }
 
 
 std::optional<LRUCache::ValueType> LRUCache::get(KeyType key) {
-    auto nodeIterator = map_.find(key);
-    if(nodeIterator != map_.end()){
+    auto nodeIterator = m_map.find(key);
+    if(nodeIterator != m_map.end()){
         bump(nodeIterator->second);
         return nodeIterator->second->second;
     }
@@ -33,15 +33,15 @@ std::optional<LRUCache::ValueType> LRUCache::get(KeyType key) {
 }
 
 void LRUCache::put(KeyType key, ValueType value) {
-    auto nodeIterator = map_.find(key);
-    if(nodeIterator != map_.end()){
+    auto nodeIterator = m_map.find(key);
+    if(nodeIterator != m_map.end()){
         bump(nodeIterator->second);
         nodeIterator->second->second = value;
         return;
     }
 
-    list_.emplace_front(key,value);
-    map_.insert({key, list_.begin()});
+    m_list.emplace_front(key,value);
+    m_map.insert({key, m_list.begin()});
     evict();
 }
 

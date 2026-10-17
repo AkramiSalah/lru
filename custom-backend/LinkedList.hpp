@@ -29,8 +29,8 @@ public:
 
     bool full() const { return m_blockPool.full(); }
     
-    uint32_t getTailIndex() const { return this->getNode(m_tailSentinel_index).prev; }
-    uint32_t getHeadIndex() const { return this->getNode(m_headSentinel_index).next; }
+    uint32_t getTailIndex() const { return this->getNode(m_tailSentinelIndex).prev; }
+    uint32_t getHeadIndex() const { return this->getNode(m_headSentinelIndex).next; }
     
     Node& getNode(uint32_t blockIndex) { return m_blockPool.getBlock(blockIndex).payload; }
     const Node& getNode(uint32_t blockIndex) const { return m_blockPool.getBlock(blockIndex).payload; }
@@ -41,27 +41,27 @@ public:
 
     // void push_back(uint32_t blockIndex); code is below. commented out. reasons also below.
     
-    void push_front(uint32_t blockIndex);
+    void pushToFront(uint32_t blockIndex);
 
-    uint32_t create_node_at_front(KeyType key, ValueType value);
+    uint32_t createAtFront(KeyType key, ValueType value);
 
 private:
-    uint32_t m_headSentinel_index;
-    uint32_t m_tailSentinel_index;
+    uint32_t m_headSentinelIndex;
+    uint32_t m_tailSentinelIndex;
     BlockPool<Node> m_blockPool;
 };
 
 inline LinkedList::LinkedList(uint32_t capacity) : m_blockPool(capacity + 2){
-    m_headSentinel_index = m_blockPool.allocBlock();
-    m_tailSentinel_index = m_blockPool.allocBlock();
+    m_headSentinelIndex = m_blockPool.allocBlock();
+    m_tailSentinelIndex = m_blockPool.allocBlock();
 
-    auto& head = getNode(m_headSentinel_index);
-    auto& tail = getNode(m_tailSentinel_index);
+    auto& head = getNode(m_headSentinelIndex);
+    auto& tail = getNode(m_tailSentinelIndex);
 
     head.prev = BLOCK_NULLPTR;
-    head.next = m_tailSentinel_index;
+    head.next = m_tailSentinelIndex;
 
-    tail.prev = m_headSentinel_index;
+    tail.prev = m_headSentinelIndex;
     tail.next = BLOCK_NULLPTR;
 }
 
@@ -87,19 +87,19 @@ inline void LinkedList::detachNode(uint32_t blockIndex){
     getNode(node.next).prev = node.prev;
 }
 
-inline void LinkedList::push_front(uint32_t blockIndex){
-    uint32_t oldHeadIndex = getNode(m_headSentinel_index).next;
+inline void LinkedList::pushToFront(uint32_t blockIndex){
+    uint32_t oldHeadIndex = getNode(m_headSentinelIndex).next;
 
     Node& node = getNode(blockIndex);
-    node.prev = m_headSentinel_index;
+    node.prev = m_headSentinelIndex;
     node.next = oldHeadIndex;
 
     getNode(oldHeadIndex).prev = blockIndex;
-    getNode(m_headSentinel_index).next = blockIndex;
+    getNode(m_headSentinelIndex).next = blockIndex;
 
 }
 
-inline uint32_t LinkedList::create_node_at_front(KeyType key, ValueType value){
+inline uint32_t LinkedList::createAtFront(KeyType key, ValueType value){
     // this function assumes that the LL is NOT full
     auto blockIndex = m_blockPool.allocBlock();
 
@@ -107,7 +107,7 @@ inline uint32_t LinkedList::create_node_at_front(KeyType key, ValueType value){
     node.key = key;
     node.value = value;
 
-    push_front(blockIndex);
+    pushToFront(blockIndex);
     return blockIndex;
 }
 

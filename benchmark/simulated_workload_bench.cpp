@@ -91,10 +91,14 @@ int main(){
     std::cout << "Custom Backend  : " << customMs << " ms\n";
     std::cout << "Standard Backend: " << standardMs << " ms\n";
 
-    double percentageDiff = (standardMs - customMs) / standardMs * 100.0;
+    double slower = std::max(standardMs, customMs);
+    double faster = std::min(standardMs, customMs);
     std::string winner = customMs < standardMs ? "Custom" : "Standard";
 
-    std::cout << "Result: " << winner << " is " << percentageDiff << "% faster!\n";
+    double percentageDiff = slower/faster * 100.0;
+    percentageDiff = percentageDiff;
+
+    std::cout << "Result: " << winner << " is " << percentageDiff - 100 << "% faster!\n";
 
     return 0;
 }

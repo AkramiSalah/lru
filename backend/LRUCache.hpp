@@ -19,9 +19,9 @@ public:
 
     void put(KeyType key, ValueType value);
 private:
-    size_t capacity_;
-    std::list<KeyValuePair> list_;
-    std::unordered_map<KeyType, ListIter> map_;
+    size_t m_capacity;
+    std::list<KeyValuePair> m_list;
+    std::unordered_map<KeyType, ListIter> m_map;
 
     void bump(ListIter it);
 

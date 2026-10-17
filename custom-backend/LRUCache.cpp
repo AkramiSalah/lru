@@ -29,8 +29,8 @@ void LRUCache::put(KeyType key, ValueType value){
         index = m_linkedList.getTailIndex();
         auto& node = m_linkedList.getNode(index);
         
-        // map_.erase(node.key);
-        // map_.insert({key, index});
+        // m_map.erase(node.key);
+        // m_map.insert({key, index});
         
         auto nh = m_map.extract(node.key);
         nh.key() = key;
@@ -41,7 +41,7 @@ void LRUCache::put(KeyType key, ValueType value){
         node.value = value;
     }
     else{
-        index = m_linkedList.create_node_at_front(key, value); // i know for a fact createNode cant fail since LL isnt full.
+        index = m_linkedList.createAtFront(key, value); // i know for a fact createNode cant fail since LL isnt full.
         m_map.emplace(key, index);
         return; // no need to bump, node was created at front.
     }
@@ -52,6 +52,6 @@ void LRUCache::put(KeyType key, ValueType value){
 void LRUCache::bump(uint32_t blockIndex){
     if(m_linkedList.getHeadIndex() == blockIndex) return;
     m_linkedList.detachNode(blockIndex);
-    m_linkedList.push_front(blockIndex);
+    m_linkedList.pushToFront(blockIndex);
 }
 }

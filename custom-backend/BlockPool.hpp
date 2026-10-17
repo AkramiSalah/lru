@@ -48,12 +48,12 @@ public:
 private:
     const uint32_t m_blockCount;
     Slot* m_data;
-    uint32_t m_freelist_head_index;
+    uint32_t m_freelistHeadIndex;
 };
 
 template<typename T>
 inline bool BlockPool<T>::full() const{
-    return m_freelist_head_index == BLOCK_NULLPTR;
+    return m_freelistHeadIndex == BLOCK_NULLPTR;
 }
 
 template<typename T>
@@ -74,14 +74,14 @@ uint32_t BlockPool<T>::allocBlock(){
         return BLOCK_NULLPTR;
     }
 
-    uint32_t blockIndex = m_freelist_head_index;
-    m_freelist_head_index = m_data[blockIndex].freeBlock.next;
+    uint32_t blockIndex = m_freelistHeadIndex;
+    m_freelistHeadIndex = m_data[blockIndex].freeBlock.next;
 
     return blockIndex;
 }
 
 template<typename T>
-BlockPool<T>::BlockPool(uint32_t blockCount) : m_blockCount(blockCount), m_freelist_head_index(0){
+BlockPool<T>::BlockPool(uint32_t blockCount) : m_blockCount(blockCount), m_freelistHeadIndex(0){
     if(blockCount == 0) throw std::invalid_argument("block count must be greater than 0 !!!");
     if(blockCount > MAX_CAPACITY) throw std::invalid_argument("capacity must be smaller than the maximum unsigned 32bit integer!!!");
 
