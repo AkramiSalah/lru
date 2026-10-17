@@ -4,6 +4,7 @@
 #include <optional>
 #include "../custom-backend/LRUCache.hpp"
 
+using LRUCache= custom::LRUCache;
 class CommandHandler{
 public:    
     explicit CommandHandler(LRUCache& cache) : cache_(cache){}
