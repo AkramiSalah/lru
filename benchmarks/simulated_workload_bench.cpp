@@ -38,17 +38,14 @@ private:
 template <typename CacheType>
 double benchmarkCache(CacheType& cache, const std::vector<WorkloadGenerator::Request>& requests){
     Timer timer;
-    volatile int sink = 0; // trick to make optimizer not optimize this away
-
     for (const auto& req : requests){
         if (req.op == WorkloadGenerator::Op::GET){
-            sink = cache.get(req.key).value_or(0); // value truly doesnt matter so value or zero.
+            cache.get(req.key).value_or(0); // value truly doesnt matter so value or zero.
         }
         else{
             cache.put(req.key, req.val);
         }
     }
-
     return timer.elapsedMs();
 }
 
