@@ -4,7 +4,7 @@
 #include <optional>
 #include <unordered_map>
 
-namespace standart {
+namespace standard {
 
 LRUCache::LRUCache(size_t capacity) : capacity_(capacity) {
     map_.reserve(capacity_);

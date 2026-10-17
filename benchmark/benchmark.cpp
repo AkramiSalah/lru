@@ -44,15 +44,15 @@ void runBenchmarks(uint32_t capacity, uint32_t insertCount, std::string_view lab
 
 
     BenchResult customResult   = benchCache<custom::LRUCache>("Custom  ", capacity, insertCount);
-    BenchResult standartResult = benchCache<standart::LRUCache>("Standart", capacity, insertCount);
+    BenchResult standardResult = benchCache<standard::LRUCache>("standard", capacity, insertCount);
     std::cout << "----------------------------------------\n";
     if (customResult.populateMs > 0.0) {
-        double popSpeedup = standartResult.populateMs / customResult.populateMs;
+        double popSpeedup = standardResult.populateMs / customResult.populateMs;
         std::cout << " Populate : Custom is " << popSpeedup << "x faster\n";
     }
     
     double customTotal = customResult.initMs + customResult.populateMs;
-    double standardTotal = standartResult.initMs + standartResult.populateMs;
+    double standardTotal = standardResult.initMs + standardResult.populateMs;
     if (customTotal > 0.0) {
         double totalSpeedup = standardTotal / customTotal;
         std::cout << " Total    : Custom is " << totalSpeedup << "x faster\n";

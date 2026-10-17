@@ -3,7 +3,7 @@
 #include <optional>
 #include <unordered_map>
 
-namespace standart {
+namespace standard {
 class LRUCache {
 public:
     using KeyType = int;

@@ -80,19 +80,19 @@ int main(){
     double customMs = benchmarkCache(customCache,requests);
 
 
-    // benchmark standart::LRUCache
-    standart::LRUCache standartCache(S_CAPACITY);
-    populateCache(standartCache, S_CAPACITY);
-    double standartMs = benchmarkCache(standartCache,requests);
+    // benchmark standard::LRUCache
+    standard::LRUCache standardCache(S_CAPACITY);
+    populateCache(standardCache, S_CAPACITY);
+    double standardMs = benchmarkCache(standardCache,requests);
 
 
 
     std::cout << "\n--- Benchmark Results (" << S_NUM_OPS << " ops) ---\n";
     std::cout << "Custom Backend  : " << customMs << " ms\n";
-    std::cout << "Standard Backend: " << standartMs << " ms\n";
+    std::cout << "Standard Backend: " << standardMs << " ms\n";
 
-    double percentageDiff = (standartMs - customMs) / standartMs * 100.0;
-    std::string winner = customMs < standartMs ? "Custom" : "Standard";
+    double percentageDiff = (standardMs - customMs) / standardMs * 100.0;
+    std::string winner = customMs < standardMs ? "Custom" : "Standard";
 
     std::cout << "Result: " << winner << " is " << percentageDiff << "% faster!\n";
 
