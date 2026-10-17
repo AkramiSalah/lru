@@ -6,13 +6,11 @@
 
 
 namespace custom {
-
-using KeyType = int;
-using ValueType = int;
-
 class LRUCache {
 public:
-
+    using KeyType = int;
+    using ValueType = int;
+    
     explicit LRUCache(uint32_t capacity);
     ~LRUCache() = default;
 

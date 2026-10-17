@@ -9,7 +9,7 @@ LRUCache::LRUCache(uint32_t capacity) : m_linkedList(capacity){
     m_map.reserve(capacity);
 }
 
-std::optional<ValueType> LRUCache::get(KeyType key){
+std::optional<LRUCache::ValueType> LRUCache::get(KeyType key){
     auto it = m_map.find(key);
     if(it == m_map.end()) return std::nullopt;
     
@@ -54,5 +54,4 @@ void LRUCache::bump(uint32_t blockIndex){
     m_linkedList.detachNode(blockIndex);
     m_linkedList.push_front(blockIndex);
 }
-    
 }
