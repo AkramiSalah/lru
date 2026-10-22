@@ -3,3 +3,4 @@ lru
 test
 .clangd
 bench
+build/
