@@ -79,9 +79,10 @@ int main(){
         
 
         // High eviction rate
-        {"Extreme Eviction",          100, 1'000'000},
-        {"10x Eviction",           10'000,   100'000},
         {"2x Eviction",            10'000,    20'000},
+        {"10x Eviction",           10'000,   100'000},
+        {"Extreme Eviction",          100, 1'000'000},
+        {"Unrealistic Eviction",          100, 10'000'000},
     };
 
     for (const auto& test : cases) {
