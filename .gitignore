@@ -1,6 +1,9 @@
 archive/
+build/
+
 lru
 test
-.clangd
 bench
-build/
+bench_workload
+
+.clangd
