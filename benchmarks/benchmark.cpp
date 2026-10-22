@@ -68,19 +68,20 @@ struct TestCase {
 
 int main(){
     constexpr TestCase cases[] = {
-        // High eviction rate
-        {"Extreme Eviction",          100, 1'000'000},
-        {"10x Eviction",           10'000,   100'000},
-        {"2x Eviction",            10'000,    20'000},
+        // Zero evictions
+        {"Sparse Cache (1% used)",  1'000'000,    10'000},
+        {"Sparse Cache (10% used)",   100'000,    10'000},
         
         // Exact fit
         {"Exact Fit (1M)",      1'000'000, 1'000'000},
         {"Exact Fit (100k)",      100'000,   100'000},
         {"Exact Fit (10k)",        10'000,    10'000},
+        
 
-        // Zero evictions
-        {"Sparse Cache (1% used)",  1'000'000,    10'000},
-        {"Sparse Cache (10% used)",   100'000,    10'000},
+        // High eviction rate
+        {"Extreme Eviction",          100, 1'000'000},
+        {"10x Eviction",           10'000,   100'000},
+        {"2x Eviction",            10'000,    20'000},
     };
 
     for (const auto& test : cases) {
