@@ -9,6 +9,7 @@ public:
 
     struct Node{
         uint32_t prev;
+        uint32_t next;
         KeyType key;
         ValueType value;
         uint32_t next;
