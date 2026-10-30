@@ -12,7 +12,6 @@ public:
         uint32_t next;
         KeyType key;
         ValueType value;
-        uint32_t next;
     };
 
     explicit LinkedList(uint32_t capacity);
@@ -89,9 +88,9 @@ inline void LinkedList::detachNode(uint32_t blockIndex){
 }
 
 inline void LinkedList::pushToFront(uint32_t blockIndex){
+    Node& node = getNode(blockIndex);
     uint32_t oldHeadIndex = getNode(m_headSentinelIndex).next;
 
-    Node& node = getNode(blockIndex);
     node.prev = m_headSentinelIndex;
     node.next = oldHeadIndex;
 
@@ -111,27 +110,3 @@ inline uint32_t LinkedList::createAtFront(KeyType key, ValueType value){
     pushToFront(blockIndex);
     return blockIndex;
 }
-
-// NOTE: YAGNI overlooked, im not using this, stays commented out incase i change my mind soon, otherwise DELETE THIS !
-// the fact of the matter is that im never pushing back, and if i am i have to move it to the front as soon as i push to back anyway... (LRU)
-
-// void LinkedList::push_back(uint32_t blockIndex){
-//     if(headIndex_ == BLOCK_NULLPTR && tailIndex_ == BLOCK_NULLPTR){
-//         getNode(blockIndex).prev = BLOCK_NULLPTR;
-//         getNode(blockIndex).next = BLOCK_NULLPTR;
-
-//         headIndex_ = blockIndex;
-//         tailIndex_ = blockIndex;
-//     }
-//     else if(headIndex_ != BLOCK_NULLPTR && tailIndex_ != BLOCK_NULLPTR){
-//         getNode(blockIndex).prev = tailIndex_;
-//         getNode(blockIndex).next = BLOCK_NULLPTR;
-
-//         getNode(tailIndex_).next = blockIndex;
-//         tailIndex_ = blockIndex;
-//     }
-//     else{
-//         throw std::logic_error("somehow lru head is set but tail isnt, or exact opposite");
-//     }
-// }
-
