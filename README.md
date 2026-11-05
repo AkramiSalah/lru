@@ -101,7 +101,7 @@ With this in mind I chose to focus on the upfront allocation time saving.
 ## The first chart is meant to show how much faster the custom LRU cache is once it has been initialized:
 ![](benchmarks/charts/runtime_chart.png)
 
-At 0% eviction they are almost tied, but once the cache is under heavy eviction churn, the custom pool is almost 2x faster because it never calls malloc/free.
+At 0% eviction we have a 1.7x speedup even with no evictions, but once the cache is under heavy eviction churn, the custom pool is almost 2x faster because it never calls malloc/free.
 
 This goes to show that the more eviciton you're expecting, the better the custom implementation is.
 
