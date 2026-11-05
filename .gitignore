@@ -7,3 +7,6 @@ bench
 bench_workload
 
 .clangd
+
+benchmarks/charts/raw_runs.json
+benchmarks/make_charts.py
