@@ -16,9 +16,9 @@ public:
         int val;
     };
 
-    explicit WorkloadGenerator(int capacity)
+    explicit WorkloadGenerator(int capacity, double getRatio)
         : gen(rd()),
-          boolDist(0.5),
+          boolDist(getRatio),
           keyDist(0, 2 * capacity - 1){}
 
     Request next(){
@@ -57,12 +57,15 @@ void populateCache(CacheType& cache, int itemCount){
     }
 }
 
-int main(){
+int main(int argc, char* argv[]){
     static constexpr int S_CAPACITY = 1'000'000;
     static constexpr int S_NUM_OPS  = 1'000'000;
 
+    double getRatio = (argc > 1) ? std::stod(argv[1]) : 0.5;
+    getRatio = (getRatio < 0.0 || getRatio > 1.0) ? 0.5 : getRatio;
+
     std::cout << "Generating " << S_NUM_OPS << " requests...\n";
-    WorkloadGenerator workload(S_CAPACITY);
+    WorkloadGenerator workload(S_CAPACITY, getRatio);
     std::vector<WorkloadGenerator::Request> requests;
     requests.reserve(S_NUM_OPS);
 
