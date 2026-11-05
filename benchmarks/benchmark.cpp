@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <sys/wait.h>
+#include <unistd.h>
 
 struct BenchResult {
     double initMs = 0.0;
@@ -86,7 +88,21 @@ int main(){
     };
 
     for (const auto& test : cases) {
-        runBenchmarks(test.capacity, test.inserts, test.label);
+        const pid_t pid = fork();
+
+        if(pid == 0){
+            // child code
+            runBenchmarks(test.capacity, test.inserts, test.label);
+            exit(0);
+        }
+        else if(pid > 0){
+            // parent code
+            waitpid(pid, nullptr, 0);
+        }
+        else{
+            // fork failed
+            std::cout << "fork failed with error code: " << pid << "\n"; 
+        }
     }
 
     return 0;
